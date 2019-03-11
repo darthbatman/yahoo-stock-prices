@@ -1,0 +1,35 @@
+{
+  "name": "yahoo-stock-prices",
+  "version": "1.0.1",
+  "description": "Node.js API to get stock prices from Yahoo finance",
+  "main": "yahoo-stock-prices.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "request": "^2.81.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node tests/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darthbatman/yahoo-stock-prices.git"
+  },
+  "keywords": [
+    "yahoo",
+    "stocks",
+    "stock",
+    "prices",
+    "historical",
+    "ticker",
+    "investing"
+  ],
+  "author": "Rishi Masand",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/darthbatman/yahoo-stock-prices/issues"
+  },
+  "homepage": "https://github.com/darthbatman/yahoo-stock-prices#readme"
+}
