@@ -15,7 +15,7 @@ npm install yahoo-stock-prices
 # example
 
 ```js
-var yahooStockPrices = require('../yahoo-stock-prices.js');
+var yahooStockPrices = require('yahoo-stock-prices');
 
 // start month, start day, start year, end month, end day, end year, ticker, frequency
 
