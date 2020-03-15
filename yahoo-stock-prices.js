@@ -1,8 +1,9 @@
 const request = require('request');
 
+const baseUrl = 'https://finance.yahoo.com/quote/';
+
 module.exports.getHistoricalPrices = function (startMonth, startDay, startYear, endMonth, endDay, endYear, ticker, frequency, callback) {
 
-	const baseUrl = 'https://finance.yahoo.com/quote/';
 	const startDate = Math.floor(Date.UTC(startYear, startMonth, startDay, 0, 0, 0) / 1000);
 	const endDate = Math.floor(Date.UTC(endYear, endMonth, endDay, 0, 0, 0) / 1000);
 
