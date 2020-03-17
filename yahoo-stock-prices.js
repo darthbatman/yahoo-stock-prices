@@ -28,7 +28,10 @@ module.exports.getCurrentPrice = function (ticker, callback) {
 		if (err) { callback(err); }
 
 		try {
-			var price = parseFloat(body.split("currentPrice")[1].split("fmt\":\"")[1].split("\"")[0]);
+			var price = parseFloat(body.split(`"${ticker}":{"sourceInterval"`)[1]
+				.split("regularMarketPrice")[1]
+				.split("fmt\":\"")[1]
+				.split("\"")[0]);
 
 			callback(null, price);
 		} catch (err) {
