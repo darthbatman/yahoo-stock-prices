@@ -29,7 +29,7 @@ module.exports.getCurrentPrice = async function (ticker, callback) {
 		try {
 			const $ = cheerio.load(res.data);
 			const price = $("#quote-header-info > div.My\\(6px\\).Pos\\(r\\).smartphone_Mt\\(6px\\) > div.D\\(ib\\).Va\\(m\\).Maw\\(65\\%\\).Ov\\(h\\) > div > span.Trsdu\\(0\\.3s\\).Fw\\(b\\).Fz\\(36px\\).Mb\\(-4px\\).D\\(ib\\)").text();
-			callback(null, parseFloat(price));
+			callback(null, parseFloat(price.replace(',', '')));
 		}
 		catch(err) {
 			callback(err);
