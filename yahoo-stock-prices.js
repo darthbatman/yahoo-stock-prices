@@ -2,7 +2,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const instance = axios.create({
 	baseURL: 'https://finance.yahoo.com/quote/',
-	timeout: 1000
+	timeout: 5000
 })
 
 module.exports.getHistoricalPrices = function (startMonth, startDay, startYear, endMonth, endDay, endYear, ticker, frequency, callback) {
