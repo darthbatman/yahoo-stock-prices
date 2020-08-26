@@ -1,5 +1,5 @@
 const axios = require('axios');
-const cherrio = require('cheerio');
+const cheerio = require('cheerio');
 const instance = axios.create({
 	baseURL: 'https://finance.yahoo.com/quote/',
 	timeout: 1000
@@ -27,7 +27,7 @@ module.exports.getCurrentPrice = async function (ticker, callback) {
 	instance.get(`${ticker}/`)
 	.then(res => {
 		try {
-			const $ = cherrio.load(res.data);
+			const $ = cheerio.load(res.data);
 			const price = $("#quote-header-info > div.My\\(6px\\).Pos\\(r\\).smartphone_Mt\\(6px\\) > div.D\\(ib\\).Va\\(m\\).Maw\\(65\\%\\).Ov\\(h\\) > div > span.Trsdu\\(0\\.3s\\).Fw\\(b\\).Fz\\(36px\\).Mb\\(-4px\\).D\\(ib\\)").text();
 			callback(null, parseFloat(price));
 		}
