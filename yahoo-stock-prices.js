@@ -1,41 +1,38 @@
-const request = require('request');
-
-const baseUrl = 'https://finance.yahoo.com/quote/';
+const axios = require('axios');
+const cherrio = require('cheerio');
+const instance = axios.create({
+	baseURL: 'https://finance.yahoo.com/quote/',
+	timeout: 1000
+})
 
 module.exports.getHistoricalPrices = function (startMonth, startDay, startYear, endMonth, endDay, endYear, ticker, frequency, callback) {
-
 	const startDate = Math.floor(Date.UTC(startYear, startMonth, startDay, 0, 0, 0) / 1000);
 	const endDate = Math.floor(Date.UTC(endYear, endMonth, endDay, 0, 0, 0) / 1000);
-
-	request(baseUrl + ticker + "/history?period1=" + startDate + "&period2=" + endDate + "&interval=" + frequency + "&filter=history&frequency=" + frequency, function (err, res, body) {
-
-		if (err) { callback(err); }
-
-		try {
-			var prices = JSON.parse(body.split('HistoricalPriceStore\":{\"prices\":')[1].split(",\"isPending")[0]);
-
-			callback(null, prices)
-		} catch (err) {
+	instance.get(`${ticker}/history?period1=${startDate}&period2=${endDate}&interval=${frequency}&filter=history&frequency=${frequency}`)
+		.then(res => {
+			try {
+				const prices = JSON.parse(res.data.split('HistoricalPriceStore\":{\"prices\":')[1].split(",\"isPending")[0]);
+				callback(null, prices)
+			}
+			catch(err) {
+				callback(err)
+			}
+		})
+		.catch(err => {
 			callback(err)
-		}
-	});
+		})
 };
 
-module.exports.getCurrentPrice = function (ticker, callback) {
-
-	request(baseUrl + ticker + "/", function (err, res, body) {
-
-		if (err) { callback(err); }
-
+module.exports.getCurrentPrice = async function (ticker, callback) {
+	instance.get(`${ticker}/`)
+	.then(res => {
 		try {
-			var price = parseFloat(body.split(`"${ticker}":{"sourceInterval"`)[1]
-				.split("regularMarketPrice")[1]
-				.split("fmt\":\"")[1]
-				.split("\"")[0]);
-
-			callback(null, price);
-		} catch (err) {
-			callback(err)
+			const $ = cherrio.load(res.data);
+			const price = $("#quote-header-info > div.My\\(6px\\).Pos\\(r\\).smartphone_Mt\\(6px\\) > div.D\\(ib\\).Va\\(m\\).Maw\\(65\\%\\).Ov\\(h\\) > div > span.Trsdu\\(0\\.3s\\).Fw\\(b\\).Fz\\(36px\\).Mb\\(-4px\\).D\\(ib\\)").text();
+			callback(null, parseFloat(price));
 		}
-	});
+		catch(err) {
+			callback(err);
+		}
+	})
 };
