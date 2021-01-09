@@ -13,7 +13,7 @@ const baseUrl = 'https://finance.yahoo.com/quote/';
  * @param {('1d','1wk','1mo')} frequency
  * @param {Function} callback
  */
-module.exports.getHistoricalPrices = function (
+const getHistoricalPrices = function (
     startMonth,
     startDay,
     startYear,
@@ -22,7 +22,7 @@ module.exports.getHistoricalPrices = function (
     endYear,
     ticker,
     frequency,
-    callback
+    callback,
 ) {
     const startDate = Math.floor(Date.UTC(startYear, startMonth, startDay, 0, 0, 0) / 1000);
     const endDate = Math.floor(Date.UTC(endYear, endMonth, endDay, 0, 0, 0) / 1000);
@@ -57,16 +57,15 @@ module.exports.getHistoricalPrices = function (
 
 /**
  * @param {string} ticker
- * @param {Function} [callback]
  *
- * @return {Promise<number>|undefined} Returns a promise if no callback was supplied.
+ * @return {Promise<{price: number, currency: string}>}
  */
-module.exports.getCurrentPrice = function (ticker, callback) {
-    const promise = new Promise((resolve, reject) => {
+const getCurrentData = function (ticker) {
+    return new Promise((resolve, reject) => {
         request(`${baseUrl + ticker}/`, (err, res, body) => {
             if (err) {
                 reject(err);
-                return
+                return;
             }
 
             try {
@@ -75,20 +74,42 @@ module.exports.getCurrentPrice = function (ticker, callback) {
                     .split('fmt":"')[1]
                     .split('"')[0]);
 
-                resolve(price);
+                const currencyMatch = body.match(/Currency in ([A-Za-z]{3})/);
+                let currency = null;
+                if (currencyMatch) {
+                    currency = currencyMatch[1].toUpperCase();
+                }
+
+                resolve({
+                    currency,
+                    price,
+                });
             } catch (err) {
                 reject(err);
             }
         });
     });
+};
 
-    // If a callback function was supplied return the result to the callback.
-    // Otherwise return a promise.
-    if (typeof callback === 'function') {
-        promise
-            .then((price) => callback(null, price))
+/**
+ * @param {string} ticker
+ * @param {Function} [callback]
+ *
+ * @return {Promise<number>|undefined} Returns a promise if no callback was supplied.
+ */
+const getCurrentPrice = function (ticker, callback) {
+    if (callback) {
+        getCurrentData(ticker)
+            .then((data) => callback(null, data.price))
             .catch((err) => callback(err));
     } else {
-        return promise;
+        return getCurrentData(ticker)
+            .then((data) => data.price);
     }
+};
+
+module.exports = {
+    getHistoricalPrices,
+    getCurrentData,
+    getCurrentPrice,
 };

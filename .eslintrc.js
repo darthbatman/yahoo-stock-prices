@@ -4,10 +4,11 @@ module.exports = {
         'eslint-config-airbnb-base',
     ],
     env: {
+        jest: true,
         node: true,
     },
     rules: {
         // Indent with 4 spaces
-        indent: ['error', 4]
+        indent: ['error', 4],
     },
 };
