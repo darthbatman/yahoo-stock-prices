@@ -46,6 +46,23 @@ describe('yahoo-stock-prices', () => {
         });
     });
 
+    describe('getCurrentData', () => {
+        test.each(
+            [
+                ['AAPL', { currency: 'USD' }],
+                ['IAG.L', { currency: 'GBP' }],
+                ['TSLA.MX', { currency: 'MXN' }],
+                ['DTE.DE', { currency: 'EUR' }],
+            ],
+        )('Should return data object for %s containing currency and price', (ticker, expected) => {
+            return ysp.getCurrentData(ticker).then((data) => {
+                console.log(ticker, data);
+                expect(data.currency).toEqual(expected.currency);
+                expect(typeof data.price).toBe('number');
+            });
+        });
+    });
+
     describe('getHistoricalPrices', () => {
         it('Should return an array of prices via callback', (done) => {
             const returnedValue = ysp.getHistoricalPrices(3, 2, 2016, 3, 9, 2016, 'JNJ', '1d', (err, prices) => {
