@@ -2,7 +2,28 @@ const request = require('request');
 
 const baseUrl = 'https://finance.yahoo.com/quote/';
 
-module.exports.getHistoricalPrices = function (startMonth, startDay, startYear, endMonth, endDay, endYear, ticker, frequency, callback) {
+/**
+ * @param {number} startMonth
+ * @param {number} startDay
+ * @param {number} startYear
+ * @param {number} endMonth
+ * @param {number} endDay
+ * @param {number} endYear
+ * @param {string} ticker
+ * @param {('1d','1wk','1mo')} frequency
+ * @param {Function} callback
+ */
+module.exports.getHistoricalPrices = function (
+    startMonth,
+    startDay,
+    startYear,
+    endMonth,
+    endDay,
+    endYear,
+    ticker,
+    frequency,
+    callback
+) {
     const startDate = Math.floor(Date.UTC(startYear, startMonth, startDay, 0, 0, 0) / 1000);
     const endDate = Math.floor(Date.UTC(endYear, endMonth, endDay, 0, 0, 0) / 1000);
 
@@ -21,6 +42,10 @@ module.exports.getHistoricalPrices = function (startMonth, startDay, startYear, 
     });
 };
 
+/**
+ * @param {string} ticker
+ * @param {Function} callback
+ */
 module.exports.getCurrentPrice = function (ticker, callback) {
     request(`${baseUrl + ticker}/`, (err, res, body) => {
         if (err) {
