@@ -2,8 +2,8 @@ const ysp = require('../yahoo-stock-prices');
 
 describe('yahoo-stock-prices', () => {
     describe('getCurrentPrice', () => {
-        it('Should return a price', (done) => {
-            ysp.getCurrentPrice('AAPL', (err, price) => {
+        it('Should return a price via callback', (done) => {
+            const returnedValue = ysp.getCurrentPrice('AAPL', (err, price) => {
                 console.log('Returned AAPL price is:', price);
 
                 // It should return a number greater than 0
@@ -20,12 +20,23 @@ describe('yahoo-stock-prices', () => {
 
                 done();
             });
+
+            // It should not have returned a Promise if a callback was supplied.
+            expect(returnedValue).toBeUndefined();
+        });
+
+        it('Should return a promise with the price', () => {
+            return ysp.getCurrentPrice('AAPL').then((price) => {
+                expect(typeof price).toBe('number');
+                expect(price).toBeGreaterThan(0);
+                expect(price).toBeLessThan(10000);
+            });
         });
     });
 
     describe('getHistoricalPrices', () => {
-        it('Should return an array of prices', (done) => {
-            ysp.getHistoricalPrices(3, 2, 2016, 3, 9, 2016, 'JNJ', '1d', (err, prices) => {
+        it('Should return an array of prices via callback', (done) => {
+            const returnedValue = ysp.getHistoricalPrices(3, 2, 2016, 3, 9, 2016, 'JNJ', '1d', (err, prices) => {
                 expect(Array.isArray(prices)).toBe(true);
                 expect(prices.length).toBeGreaterThan(0);
 
@@ -81,6 +92,16 @@ describe('yahoo-stock-prices', () => {
                 );
 
                 done();
+            });
+
+            // It should not have returned a Promise if a callback was supplied.
+            expect(returnedValue).toBeUndefined();
+        });
+
+        it('Should return a promise with an array of prices', () => {
+            return ysp.getHistoricalPrices(3, 2, 2016, 3, 9, 2016, 'JNJ', '1d').then((prices) => {
+                expect(Array.isArray(prices)).toBe(true);
+                expect(prices[1].high).toBe(109.62000274658203);
             });
         });
     });

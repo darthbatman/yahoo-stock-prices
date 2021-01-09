@@ -27,40 +27,68 @@ module.exports.getHistoricalPrices = function (
     const startDate = Math.floor(Date.UTC(startYear, startMonth, startDay, 0, 0, 0) / 1000);
     const endDate = Math.floor(Date.UTC(endYear, endMonth, endDay, 0, 0, 0) / 1000);
 
-    request(`${baseUrl + ticker}/history?period1=${startDate}&period2=${endDate}&interval=${frequency}&filter=history&frequency=${frequency}`, (err, res, body) => {
-        if (err) {
-            callback(err);
-        }
+    const promise = new Promise((resolve, reject) => {
+        request(`${baseUrl + ticker}/history?period1=${startDate}&period2=${endDate}&interval=${frequency}&filter=history&frequency=${frequency}`, (err, res, body) => {
+            if (err) {
+                reject(err);
+                return;
+            }
 
-        try {
-            const prices = JSON.parse(body.split('HistoricalPriceStore\":{\"prices\":')[1].split(',"isPending')[0]);
+            try {
+                const prices = JSON.parse(body.split('HistoricalPriceStore\":{\"prices\":')[1].split(',"isPending')[0]);
 
-            callback(null, prices);
-        } catch (err) {
-            callback(err);
-        }
+                resolve(prices);
+            } catch (err) {
+                reject(err);
+            }
+        });
     });
+
+    // If a callback function was supplied return the result to the callback.
+    // Otherwise return a promise.
+    if (typeof callback === 'function') {
+        promise
+            .then((price) => callback(null, price))
+            .catch((err) => callback(err));
+    } else {
+        return promise;
+    }
 };
 
 /**
  * @param {string} ticker
- * @param {Function} callback
+ * @param {Function} [callback]
+ *
+ * @return {Promise<number>|undefined} Returns a promise if no callback was supplied.
  */
 module.exports.getCurrentPrice = function (ticker, callback) {
-    request(`${baseUrl + ticker}/`, (err, res, body) => {
-        if (err) {
-            callback(err);
-        }
+    const promise = new Promise((resolve, reject) => {
+        request(`${baseUrl + ticker}/`, (err, res, body) => {
+            if (err) {
+                reject(err);
+                return
+            }
 
-        try {
-            const price = parseFloat(body.split(`"${ticker}":{"sourceInterval"`)[1]
-                .split('regularMarketPrice')[1]
-                .split('fmt":"')[1]
-                .split('"')[0]);
+            try {
+                const price = parseFloat(body.split(`"${ticker}":{"sourceInterval"`)[1]
+                    .split('regularMarketPrice')[1]
+                    .split('fmt":"')[1]
+                    .split('"')[0]);
 
-            callback(null, price);
-        } catch (err) {
-            callback(err);
-        }
+                resolve(price);
+            } catch (err) {
+                reject(err);
+            }
+        });
     });
+
+    // If a callback function was supplied return the result to the callback.
+    // Otherwise return a promise.
+    if (typeof callback === 'function') {
+        promise
+            .then((price) => callback(null, price))
+            .catch((err) => callback(err));
+    } else {
+        return promise;
+    }
 };
