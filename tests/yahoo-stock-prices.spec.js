@@ -50,7 +50,7 @@ describe('yahoo-stock-prices', () => {
         test.each(
             [
                 ['AAPL', { currency: 'USD' }],
-                ['IAG.L', { currency: 'GBP' }],
+                ['IAG.L', { currency: 'GBp' }],
                 ['TSLA.MX', { currency: 'MXN' }],
                 ['DTE.DE', { currency: 'EUR' }],
             ],

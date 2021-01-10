@@ -79,7 +79,7 @@ const getCurrentData = function (ticker) {
                 const currencyMatch = body.match(/Currency in ([A-Za-z]{3})/);
                 let currency = null;
                 if (currencyMatch) {
-                    currency = currencyMatch[1].toUpperCase();
+                    currency = currencyMatch[1];
                 }
 
                 resolve({
