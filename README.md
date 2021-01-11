@@ -1,113 +1,146 @@
 # yahoo-stock-prices
-Node.js API to get stock prices from Yahoo finance
+Node.js API to scrape stock prices from Yahoo Finance.
 
-[![https://nodei.co/npm/yahoo-stock-prices.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/yahoo-stock-prices.png?downloads=true&downloadRank=true)](https://www.npmjs.com/package/reddit-by-date)
+[![https://nodei.co/npm/yahoo-stock-prices.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/yahoo-stock-prices.png?downloads=true&downloadRank=true)](https://www.npmjs.com/package/yahoo-stock-prices)
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/darthbatman/yahoo-stock-prices)
 
 
-# install
+# Installation
 
 ```
 npm install yahoo-stock-prices
 ```
 
-# example
+# Usage
+
+## getCurrentData
+
+Returns a promise which resolves with the current price of a stock, along with the currency of that stock.
+
+### Example
 
 ```js
-var yahooStockPrices = require('yahoo-stock-prices');
+const data = await yahooStockPrices.getCurrentData('AAPL');
+console.log(data); // { currency: 'USD', price: 132.05 }
+```
 
-// start month, start day, start year, end month, end day, end year, ticker, frequency
+## getCurrentPrice
 
-// month [ 0 -> 11 ] = [ January -> December ]
+Returns a promise which resolves with only the current price, as a number.
 
-yahooStockPrices.getHistoricalPrices(3, 2, 2016, 3, 9, 2016, 'JNJ', '1d', function(err, prices){
+### Example
 
-	console.log(prices);
+```js
+const price = await yahooStockPrices.getCurrentPrice('AAPL');
+console.log(price); // 132.05
+```
 
-});
+For backward compatibility with earlier versions you can also provide a callback as the second parameter, in which case no promise will be returned.
 
-yahooStockPrices.getCurrentPrice('AAPL', function(err, price){
-
-	console.log(price);
-
+```js
+yahooStockPrices.getCurrentPrice('AAPL', (err, price) => {
+    console.log(price); // 132.05
 });
 ```
 
-# api
+## getHistoricalPrices
 
-### getHistoricalPrices(startMonth, startDay, startYear, endMonth, endDay, endYear, ticker, frequency, callback)
+Returns a promise that resolves with an array of prices for ticker symbol within dates.
 
-Type: `function`
+### Parameters
 
-```startMonth``` number (integer from 0 to 11)
+`startMonth` number (integer from 0 to 11)
 
-```startDay``` number (integer from 0 to 31)
+`startDay` number (integer from 0 to 31)
 
-```startYear``` number (integer)
+`startYear` number (integer - 4 digit year)
 
-```endMonth``` number (integer from 0 to 11)
+`endMonth` number (integer from 0 to 11)
 
-```endDay``` number (integer from 0 to 31)
+`endDay` number (integer from 0 to 31)
 
-```endYear``` number (integer)
+`endYear` number (integer)
 
-```ticker``` string (stock ticker symbol)
+`ticker` string (stock ticker symbol)
 
-```frequency``` string (1 day = "1d", 1 week = "1wk", 1 month = "1mo")
+`frequency` string (1 day = "1d", 1 week = "1wk", 1 month = "1mo")
 
-```callback``` function
+`callback` function (Optional - if a callback function is provided no promise will be returned)
 
-Returns array of prices for ticker symbol within dates. 
+### Return Value
 
-### prices
+Each array item contains:
 
-Type: `array`
-
-Price objects.
-
-### priceObject.date
+#### date
 
 Type: `number`
 
-Date of price in milliseconds since January 1, 1970.
+Timestamp in seconds since January 1, 1970 of the start of trading on the day this data is for.
 
-### priceObject.open
+#### open
 
 Type: `number`
 
 Opening price of stock on date.
 
-### priceObject.high
+#### high
 
 Type: `number`
 
 Highest price of stock on date.
 
-### priceObject.low
+#### low
 
 Type: `number`
 
 Lowest price of stock on date.
 
-### priceObject.close
+#### close
 
 Type: `number`
 
-Closing price of stock on date.
+Closing price of stock on date adjusted for splits.
 
-### priceObject.volume
+#### volume
 
 Type: `number`
 
 Volume of stock traded on date.
 
-### priceObject.adjclose
+#### adjclose
 
 Type: `number`
 
-Adjusted closing price of stock on date.
+Adjusted close price adjusted for both dividends and splits.
 
-# license
+### Example
+
+```js
+const prices = await yahooStockPrices.getHistoricalPrices(0, 6, 2020, 0, 8, 2020, 'AAPL', '1d');
+console.log(prices);
+// [
+//     {
+//         date: 1578407400,
+//         open: 74.95999908447266,
+//         high: 75.2249984741211,
+//         low: 74.37000274658203,
+//         close: 74.59750366210938,
+//         volume: 108872000,
+//         adjclose: 73.95879364013672
+//     },
+//     {
+//         date: 1578321000,
+//         open: 73.44750213623047,
+//         high: 74.98999786376953,
+//         low: 73.1875,
+//         close: 74.94999694824219,
+//         volume: 118387200,
+//         adjclose: 74.30826568603516
+//     },
+// ]
+```
+
+# License
 
 MIT © [Rishi Masand](https://github.com/darthbatman)

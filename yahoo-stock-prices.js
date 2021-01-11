@@ -11,7 +11,9 @@ const baseUrl = 'https://finance.yahoo.com/quote/';
  * @param {number} endYear
  * @param {string} ticker
  * @param {('1d','1wk','1mo')} frequency
- * @param {Function} callback
+ * @param {Function} [callback]
+ *
+ * @return {Promise<{date: number, open: number, high:number, low:number, close:number, volume:number, adjclose:number}[]>|undefined} Returns a promise if no callback was supplied.
  */
 const getHistoricalPrices = function (
     startMonth,
