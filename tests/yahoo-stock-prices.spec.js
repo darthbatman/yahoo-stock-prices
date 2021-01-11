@@ -128,9 +128,29 @@ describe('yahoo-stock-prices', () => {
         });
 
         it('Should return a promise with an array of prices', () => {
-            return ysp.getHistoricalPrices(3, 2, 2016, 3, 9, 2016, 'JNJ', '1d').then((prices) => {
-                expect(Array.isArray(prices)).toBe(true);
-                expect(prices[1].high).toBe(109.62000274658203);
+            return ysp.getHistoricalPrices(0, 6, 2020, 0, 8, 2020, 'AAPL', '1d').then((prices) => {
+                expect(prices).toEqual(
+                    [
+                        {
+                            date: 1578407400,
+                            open: 74.95999908447266,
+                            high: 75.2249984741211,
+                            low: 74.37000274658203,
+                            close: 74.59750366210938,
+                            volume: 108872000,
+                            adjclose: 73.95879364013672,
+                        },
+                        {
+                            date: 1578321000,
+                            open: 73.44750213623047,
+                            high: 74.98999786376953,
+                            low: 73.1875,
+                            close: 74.94999694824219,
+                            volume: 118387200,
+                            adjclose: 74.30826568603516,
+                        },
+                    ],
+                );
             });
         });
     });
