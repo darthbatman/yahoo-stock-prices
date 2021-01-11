@@ -1,7 +1,7 @@
 # yahoo-stock-prices
 Node.js API to scrape stock prices from Yahoo Finance.
 
-[![https://nodei.co/npm/yahoo-stock-prices.png?downloads=true&downloadRank=true&stars=true](https://nodei.co/npm/yahoo-stock-prices.png?downloads=true&downloadRank=true)](https://www.npmjs.com/package/yahoo-stock-prices)
+[![NPM](https://nodei.co/npm/yahoo-stock-prices.png?mini=true)](https://npmjs.org/package/yahoo-stock-prices)
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/darthbatman/yahoo-stock-prices)
 
